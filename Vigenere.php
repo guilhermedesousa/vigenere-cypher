@@ -39,26 +39,32 @@ class Vigenere
         return $this->rot_string($cipher_text, $message_key, -1);
     }
 
-    private function rot_char(string $char, int $shift): string
+    private function rot_char(string $char, int $shift, int $op): string
     {
         // ascii values covered: 32 to 126 (94 characters)
         $char_pos = ord($char) - 32;
 
-        // Ci = Mi + Ki (mod n)
-        $new_char = ($char_pos + $shift) % 94;
+        if ($op) {
+            // Ci = Mi + Ki (mod n)
+            $new_char = ($char_pos + $shift) % 94;
+        } else {
+            // Mi = Ci - Ki + n (mod n)
+            $new_char = ($char_pos + $shift + 94) % 94;
+        }
 
         return chr($new_char + 32);
     }
 
-    private function rot_string(string $plain_text, string $message_key, int $encoding_factor): string
+    private function rot_string(string $text, string $message_key, int $encoding_factor): string
     {
         $rotated = "";
 
-        for ($i = 0; $i < strlen($plain_text); $i++) {
+        for ($i = 0; $i < strlen($text); $i++) {
             // get character ascii value
             $char_ascii = ord($message_key[$i]);
             $shift = ($char_ascii - 32) * $encoding_factor;
-            $rotated .= $this->rot_char($plain_text[$i], $shift);
+            $op = $encoding_factor === 1 ? 1 : 0;
+            $rotated .= $this->rot_char($text[$i], $shift, $op);
         }
 
         return $rotated;
@@ -83,8 +89,11 @@ class Vigenere
     }
 }
 
-$vigenere = new Vigenere("iamiexist");
-$cipher_text = $vigenere->encode("machinesc") . PHP_EOL;
+$key = "segurancadedados";
+$vigenere = new Vigenere($key);
+
+$cipher_text = $vigenere->encode("meunomeehguilherme");
 echo "cipher text: " . $cipher_text . PHP_EOL;
+
 $plain_text = $vigenere->decode($cipher_text) . PHP_EOL;
 echo "plain text: " . $plain_text . PHP_EOL;
