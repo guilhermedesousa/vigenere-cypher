@@ -41,15 +41,15 @@ class Vigenere
 
     private function rot_char(string $char, int $shift, int $op): string
     {
-        // ascii values covered: 32 to 126 (94 characters)
+        // ascii values covered: 32 to 126 (95 characters)
         $char_pos = ord($char) - 32;
 
         if ($op) {
             // Ci = Mi + Ki (mod n)
-            $new_char = ($char_pos + $shift) % 94;
+            $new_char = ($char_pos + $shift) % 95;
         } else {
             // Mi = Ci - Ki + n (mod n)
-            $new_char = ($char_pos + $shift + 94) % 94;
+            $new_char = ($char_pos + $shift + 95) % 95;
         }
 
         return chr($new_char + 32);
